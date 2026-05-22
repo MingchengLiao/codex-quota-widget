@@ -1,0 +1,95 @@
+<svg width="1440" height="700" viewBox="0 0 1440 700" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Quota Widget 中文手绘 UI mockup</title>
+  <desc id="desc">Codex 额度小工具在 Touch Bar 上的手绘风中文界面图。</desc>
+  <defs>
+    <filter id="sketch" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="10" flood-color="#2D2A24" flood-opacity="0.18"/>
+    </filter>
+    <style>
+      .hand {
+        font-family: Virgil, "Comic Sans MS", "Bradley Hand", "PingFang SC", "Hiragino Sans GB", cursive;
+      }
+      .stroke {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+
+  <rect width="1440" height="700" fill="#FFF8E8"/>
+  <path d="M76 72C306 38 527 58 733 46C948 34 1157 51 1363 74" stroke="#E8DFC9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M83 632C312 668 546 642 778 657C978 670 1163 649 1352 626" stroke="#E8DFC9" stroke-width="4" stroke-linecap="round"/>
+
+  <g filter="url(#sketch)">
+    <text x="104" y="104" class="hand" fill="#1F2933" font-size="46" font-weight="700">Codex Quota Widget</text>
+    <text x="108" y="145" class="hand" fill="#5C6470" font-size="24">一个给额度焦虑用户用的小仪表盘。</text>
+    <text x="108" y="180" class="hand" fill="#5C6470" font-size="24">把 5h 和 7D 剩余额度放到眼前，不挤菜单栏。</text>
+  </g>
+
+  <g filter="url(#softShadow)" transform="rotate(-1.2 720 374)">
+    <path d="M126 282C278 270 438 279 593 273C776 265 964 271 1139 274C1209 275 1277 278 1324 286C1337 316 1338 405 1325 434C1107 443 869 436 650 440C450 444 282 437 127 429C115 390 115 323 126 282Z" fill="#151719"/>
+    <path class="stroke" d="M126 282C289 272 429 279 593 273C778 264 969 271 1141 274C1209 275 1278 279 1324 286" stroke="#0B0D0E" stroke-width="5"/>
+    <path class="stroke" d="M1324 286C1339 321 1339 399 1325 434C1102 443 869 436 650 440C447 444 281 437 127 429C115 390 115 323 126 282" stroke="#0B0D0E" stroke-width="5"/>
+    <path class="stroke" d="M133 295C286 287 447 294 604 288C786 280 963 286 1136 288C1200 289 1260 292 1311 300" stroke="#353A3D" stroke-width="2" opacity="0.75"/>
+
+    <circle cx="174" cy="358" r="32" fill="#EEF2F1" stroke="#101112" stroke-width="4"/>
+    <path class="stroke" d="M162 346C170 354 179 362 187 371" stroke="#13222A" stroke-width="5"/>
+    <path class="stroke" d="M188 346C180 354 170 364 161 372" stroke="#13222A" stroke-width="5"/>
+
+    <text x="248" y="372" class="hand" fill="#F7F7F4" font-size="38" font-weight="700">Codex</text>
+
+    <text x="522" y="333" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">5h</text>
+    <text x="522" y="398" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">7D</text>
+
+    <g transform="translate(570 314)">
+      <rect x="0" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-1 18 12)"/>
+      <rect x="50" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1 68 12)"/>
+      <rect x="100" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.8 118 12)"/>
+      <rect x="150" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.7 168 12)"/>
+      <rect x="200" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-1.3 218 12)"/>
+      <rect x="250" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.9 268 12)"/>
+      <rect x="300" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.6 318 12)"/>
+      <rect x="350" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1.1 368 12)"/>
+      <rect x="400" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.9 418 12)"/>
+      <rect x="450" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.7 468 12)"/>
+      <rect x="500" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-1.2 518 12)"/>
+      <rect x="550" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1 568 12)"/>
+      <rect x="600" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.6 618 12)"/>
+      <rect x="650" y="0" width="36" height="23" rx="8" fill="#3F4543" stroke="#59605D" stroke-width="3" transform="rotate(0.8 668 12)"/>
+    </g>
+
+    <g transform="translate(570 379)">
+      <rect x="0" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.8 18 12)"/>
+      <rect x="50" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-1.1 68 12)"/>
+      <rect x="100" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.6 118 12)"/>
+      <rect x="150" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.8 168 12)"/>
+      <rect x="200" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1.1 218 12)"/>
+      <rect x="250" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.7 268 12)"/>
+      <rect x="300" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1.2 318 12)"/>
+      <rect x="350" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-1 368 12)"/>
+      <rect x="400" y="1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(0.8 418 12)"/>
+      <rect x="450" y="0" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(-0.5 468 12)"/>
+      <rect x="500" y="-1" width="36" height="23" rx="8" fill="#73E58A" stroke="#3EAD58" stroke-width="3" transform="rotate(1.1 518 12)"/>
+      <rect x="550" y="1" width="36" height="23" rx="8" fill="#3F4543" stroke="#59605D" stroke-width="3" transform="rotate(-0.8 568 12)"/>
+      <rect x="600" y="0" width="36" height="23" rx="8" fill="#3F4543" stroke="#59605D" stroke-width="3" transform="rotate(0.9 618 12)"/>
+      <rect x="650" y="-1" width="36" height="23" rx="8" fill="#3F4543" stroke="#59605D" stroke-width="3" transform="rotate(-1.1 668 12)"/>
+    </g>
+
+    <text x="1187" y="335" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">95%</text>
+    <text x="1187" y="399" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">81%</text>
+    <text x="1312" y="335" class="hand" fill="#C9D0CA" font-size="23" font-weight="700" text-anchor="end">03:17 重置</text>
+    <text x="1312" y="399" class="hand" fill="#C9D0CA" font-size="23" font-weight="700" text-anchor="end">5/27 重置</text>
+  </g>
+
+  <g filter="url(#sketch)">
+    <path class="stroke" d="M235 520C314 505 405 509 490 512" stroke="#1F2933" stroke-width="3"/>
+    <path class="stroke" d="M490 512C472 498 464 489 453 472" stroke="#1F2933" stroke-width="3"/>
+    <text x="104" y="548" class="hand" fill="#1F2933" font-size="30" font-weight="700">在焦虑之前，一眼看见额度。</text>
+    <text x="104" y="588" class="hand" fill="#5C6470" font-size="24">不挤菜单栏，也不用点进设置里找。</text>
+    <text x="104" y="630" class="hand" fill="#5C6470" font-size="24">适合想保持创作流，又想知道额度余量的人。</text>
+  </g>
+</svg>
