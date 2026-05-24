@@ -81,8 +81,8 @@
 
     <text x="1173" y="335" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">10%</text>
     <text x="1173" y="399" class="hand" fill="#F9F7EF" font-size="29" font-weight="700" text-anchor="end">86%</text>
-    <text x="1312" y="335" class="hand" fill="#C9D0CA" font-size="20" font-weight="700" text-anchor="end">23:17 4h 59m</text>
-    <text x="1312" y="399" class="hand" fill="#C9D0CA" font-size="20" font-weight="700" text-anchor="end">5/31 6d 18h</text>
+    <text x="1312" y="335" class="hand" fill="#C9D0CA" font-size="20" font-weight="700" text-anchor="end">23:17 · 4h59m</text>
+    <text x="1312" y="399" class="hand" fill="#C9D0CA" font-size="20" font-weight="700" text-anchor="end">5/31 · 6d18h</text>
   </g>
 
   <g filter="url(#sketch)">

@@ -296,16 +296,16 @@ private enum TouchBarQuotaFormatter {
 
     static func resetText(_ date: Date?, style: ResetStyle, language _: WidgetLanguage) -> String {
         guard let date else {
-            return "-- --"
+            return "-- · --"
         }
 
         switch style {
         case .time:
             let time = timeFormatter.string(from: date)
-            return "\(time) \(countdownText(until: date, style: .time))"
+            return "\(time) · \(countdownText(until: date, style: .time))"
         case .date:
             let dateText = dateFormatter.string(from: date)
-            return "\(dateText) \(countdownText(until: date, style: .date))"
+            return "\(dateText) · \(countdownText(until: date, style: .date))"
         }
     }
 
@@ -318,15 +318,15 @@ private enum TouchBarQuotaFormatter {
         switch style {
         case .time:
             if hours > 0 {
-                return "\(hours)h \(minutes)m"
+                return "\(hours)h\(minutes)m"
             }
             return "\(max(minutes, 0))m"
         case .date:
             if days > 0 {
-                return "\(days)d \(hours)h"
+                return "\(days)d\(hours)h"
             }
             if hours > 0 {
-                return "\(hours)h \(minutes)m"
+                return "\(hours)h\(minutes)m"
             }
             return "\(max(minutes, 0))m"
         }
