@@ -8,6 +8,7 @@ struct WindowQuota: Codable {
 }
 
 struct QuotaSnapshot: Codable {
+    let providerName: String?
     let sourceFileName: String
     let eventTimestamp: Date?
     let detectedAt: Date
@@ -20,6 +21,26 @@ struct WidgetState: Codable {
     var originX: Double?
     var originY: Double?
     var language: WidgetLanguage?
+    var capsuleEnabled: Bool?
+    var touchBarProviderMode: TouchBarProviderMode?
+    // When true, keep the quota view pinned on the Touch Bar regardless of which
+    // app is in the foreground (re-assert it on every app switch). When
+    // false/unset, the Touch Bar is yielded to the foreground app after a switch.
+    var touchBarPinned: Bool?
+}
+
+enum TouchBarProviderMode: String, Codable {
+    case both
+    case codex
+    case claude
+
+    var showsCodex: Bool {
+        self == .both || self == .codex
+    }
+
+    var showsClaude: Bool {
+        self == .both || self == .claude
+    }
 }
 
 enum WidgetLanguage: String, Codable {

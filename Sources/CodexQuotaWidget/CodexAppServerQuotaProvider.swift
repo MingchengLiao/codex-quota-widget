@@ -235,6 +235,7 @@ final class CodexAppServerQuotaProvider {
         let secondary = (rateLimits["secondary"] as? [String: Any]).flatMap(parseWindow(_:))
 
         return QuotaSnapshot(
+            providerName: "Codex",
             sourceFileName: "Codex app-server",
             eventTimestamp: Date(),
             detectedAt: Date(),

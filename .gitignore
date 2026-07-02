@@ -2,3 +2,5 @@
 .build-cache/
 .build-home/
 bin/
+dist/
+.DS_Store

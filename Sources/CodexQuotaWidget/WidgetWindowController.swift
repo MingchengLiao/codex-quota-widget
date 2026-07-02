@@ -4,6 +4,7 @@ final class WidgetWindowController: NSObject, NSWindowDelegate {
     let window: NSPanel
     var onRequestRefresh: (() -> Void)?
     var onShowTouchBar: (() -> Void)?
+    var onHideCapsule: (() -> Void)?
     var onOpenTouchBarSettings: (() -> Void)?
     var onToggleLanguage: (() -> WidgetLanguage)?
     var currentLanguage: (() -> WidgetLanguage)?
@@ -54,7 +55,10 @@ final class WidgetWindowController: NSObject, NSWindowDelegate {
 
     func windowDidMove(_ notification: Notification) {
         let frame = window.frame
-        stateStore.save(WidgetState(originX: frame.origin.x, originY: frame.origin.y))
+        stateStore.update { state in
+            state.originX = frame.origin.x
+            state.originY = frame.origin.y
+        }
     }
 
     private func setupWindow() {
@@ -82,6 +86,9 @@ final class WidgetWindowController: NSObject, NSWindowDelegate {
         }
         contentView.onShowTouchBar = { [weak self] in
             self?.onShowTouchBar?()
+        }
+        contentView.onHideCapsule = { [weak self] in
+            self?.onHideCapsule?()
         }
         contentView.onOpenTouchBarSettings = { [weak self] in
             self?.onOpenTouchBarSettings?()
@@ -162,6 +169,7 @@ private final class WidgetContentView: NSView {
     var onToggleExpanded: (() -> Void)?
     var onRequestRefresh: (() -> Void)?
     var onShowTouchBar: (() -> Void)?
+    var onHideCapsule: (() -> Void)?
     var onOpenTouchBarSettings: (() -> Void)?
     var onToggleLanguage: (() -> WidgetLanguage)?
     var currentLanguage: (() -> WidgetLanguage)?
@@ -363,6 +371,14 @@ private final class WidgetContentView: NSView {
         )
         refreshItem.target = self
         menu.addItem(refreshItem)
+
+        let hideCapsuleItem = NSMenuItem(
+            title: "隐藏悬浮胶囊",
+            action: #selector(handleContextHideCapsule),
+            keyEquivalent: ""
+        )
+        hideCapsuleItem.target = self
+        menu.addItem(hideCapsuleItem)
         menu.addItem(.separator())
 
         let touchBarItem = NSMenuItem(
@@ -406,6 +422,11 @@ private final class WidgetContentView: NSView {
     @objc
     private func handleContextShowTouchBar() {
         onShowTouchBar?()
+    }
+
+    @objc
+    private func handleContextHideCapsule() {
+        onHideCapsule?()
     }
 
     @objc

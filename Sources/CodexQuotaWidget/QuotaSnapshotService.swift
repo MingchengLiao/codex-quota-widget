@@ -122,6 +122,7 @@ final class QuotaSnapshotService {
             let timestamp = parseTimestamp(payload["timestamp"] as? String)
 
             let snapshot = QuotaSnapshot(
+                providerName: "Codex",
                 sourceFileName: fileURL.lastPathComponent,
                 eventTimestamp: timestamp,
                 detectedAt: Date(),
