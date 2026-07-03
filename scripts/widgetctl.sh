@@ -21,6 +21,7 @@ Usage:
   scripts/widgetctl.sh providers codex|claude|both
   scripts/widgetctl.sh claude on|off|status|doctor
   scripts/widgetctl.sh pin on|off
+  scripts/widgetctl.sh touchbar-apps list|clear|<bundle-id-or-app-name> [...]
   scripts/widgetctl.sh touchbar-only
 EOF
 }
@@ -184,6 +185,15 @@ case "$command" in
         exit 64
         ;;
     esac
+    ;;
+
+  touchbar-apps)
+    if [[ $# -lt 1 ]]; then
+      usage
+      exit 64
+    fi
+    run_widget_cli --touchbar-apps "$@"
+    restart_if_installed
     ;;
 
   *)

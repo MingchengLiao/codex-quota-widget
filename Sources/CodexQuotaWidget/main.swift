@@ -20,6 +20,7 @@ func printUsage() {
       CodexQuotaWidget --capsule on|off
       CodexQuotaWidget --providers codex|claude|both
       CodexQuotaWidget --touchbar-pin on|off
+      CodexQuotaWidget --touchbar-apps list|clear|<bundle-id-or-app-name> [...]
 
     """)
 }
@@ -38,6 +39,7 @@ if arguments.first == "--settings" {
         "capsuleEnabled": state.capsuleEnabled ?? true,
         "claudeSnapshotFresh": claudeSnapshot != nil,
         "language": (state.language ?? .english).rawValue,
+        "touchBarAppFilters": state.touchBarAppFilters ?? [],
         "touchBarPinned": state.touchBarPinned ?? false,
         "touchBarProviderMode": (state.touchBarProviderMode ?? .both).rawValue,
         "widgetEnabled": state.widgetEnabled ?? true,
@@ -138,6 +140,55 @@ if arguments.first == "--touchbar-pin" {
         state.touchBarPinned = enabled
     }
     writeStdout("Touch Bar pin \(enabled ? "enabled" : "disabled"). Restart the helper to apply if it is already running.\n")
+    exit(EXIT_SUCCESS)
+}
+
+if arguments.first == "--touchbar-apps" {
+    guard arguments.count >= 2 else {
+        writeStderr("Usage: CodexQuotaWidget --touchbar-apps list|clear|<bundle-id-or-app-name> [...]\n")
+        exit(EX_USAGE)
+    }
+
+    let store = WidgetStateStore()
+    let subcommand = arguments[1].lowercased()
+
+    if subcommand == "list" {
+        let filters = store.load().touchBarAppFilters ?? []
+        if filters.isEmpty {
+            writeStdout("Touch Bar app filter: all apps\n")
+        } else {
+            writeStdout("Touch Bar app filter:\n")
+            for filter in filters {
+                writeStdout("  \(filter)\n")
+            }
+        }
+        exit(EXIT_SUCCESS)
+    }
+
+    if subcommand == "clear" || subcommand == "off" || subcommand == "all" {
+        store.update { state in
+            state.touchBarAppFilters = []
+        }
+        writeStdout("Touch Bar app filter cleared. Restart the helper to apply if it is already running.\n")
+        exit(EXIT_SUCCESS)
+    }
+
+    let filters = Array(arguments.dropFirst())
+        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        .filter { !$0.isEmpty }
+    guard !filters.isEmpty else {
+        writeStderr("Usage: CodexQuotaWidget --touchbar-apps list|clear|<bundle-id-or-app-name> [...]\n")
+        exit(EX_USAGE)
+    }
+
+    store.update { state in
+        state.touchBarAppFilters = filters
+    }
+    writeStdout("Touch Bar app filter set to:\n")
+    for filter in filters {
+        writeStdout("  \(filter)\n")
+    }
+    writeStdout("Restart the helper to apply if it is already running.\n")
     exit(EXIT_SUCCESS)
 }
 

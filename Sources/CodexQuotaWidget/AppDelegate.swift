@@ -23,7 +23,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var capsuleHiddenUntilCodexRelaunch = false
     private var touchBarProviderMode: TouchBarProviderMode = .both
     private var touchBarPinned = false
-    private var touchBarYieldedToForegroundApp = false
+    private var touchBarAppFilters: [String] = []
+    private var touchBarSuppressedForForegroundApp = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -33,7 +34,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         capsuleEnabled = state.capsuleEnabled ?? true
         touchBarProviderMode = state.touchBarProviderMode ?? .both
         touchBarPinned = state.touchBarPinned ?? false
-        touchBarYieldedToForegroundApp = !touchBarPinned && !isCodexFrontmost()
+        touchBarAppFilters = state.touchBarAppFilters ?? []
+        touchBarSuppressedForForegroundApp = !shouldShowTouchBar(for: NSWorkspace.shared.frontmostApplication)
         touchBarController.setLanguage(language)
         windowController.onRequestRefresh = { [weak self] in
             self?.refreshState(reason: "manual-refresh", forceSnapshotReload: true)
@@ -93,18 +95,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             forName: NSWorkspace.didActivateApplicationNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
+        ) { [weak self] notification in
             guard let self else { return }
-            if self.touchBarPinned {
-                self.touchBarController.reassertPresentation()
+            guard self.widgetEnabled else {
+                self.hideWidgetSurfaces()
                 return
             }
 
-            if self.isCodexFrontmost() {
-                self.touchBarYieldedToForegroundApp = false
-                self.showTouchBar()
+            let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+            if self.shouldShowTouchBar(for: app) {
+                self.touchBarSuppressedForForegroundApp = false
+                if self.touchBarPinned {
+                    self.touchBarController.reassertPresentation()
+                } else {
+                    self.showTouchBar()
+                }
             } else {
-                self.touchBarYieldedToForegroundApp = true
+                self.touchBarSuppressedForForegroundApp = true
                 self.touchBarController.hideForInactiveApp()
             }
         }
@@ -123,7 +130,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if launched {
             fastRefreshUntil = Date().addingTimeInterval(120)
             capsuleHiddenUntilCodexRelaunch = false
-            touchBarYieldedToForegroundApp = false
+            touchBarSuppressedForForegroundApp = !shouldShowTouchBar(for: NSWorkspace.shared.frontmostApplication)
         }
         refreshState(reason: launched ? "codex-launch" : "codex-exit")
     }
@@ -198,17 +205,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         !NSRunningApplication.runningApplications(withBundleIdentifier: codexBundleIdentifier).isEmpty
     }
 
-    private func isCodexFrontmost() -> Bool {
-        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == codexBundleIdentifier
-    }
-
     private func showTouchBar() {
+        guard shouldShowTouchBar(for: NSWorkspace.shared.frontmostApplication) else {
+            touchBarSuppressedForForegroundApp = true
+            touchBarController.hideForInactiveApp()
+            return
+        }
+
+        touchBarSuppressedForForegroundApp = false
         touchBarController.show(
             claudeSnapshot: touchBarProviderMode.showsClaude ? lastClaudeSnapshot : nil,
             codexSnapshot: touchBarProviderMode.showsCodex ? lastCodexSnapshot : nil,
             mode: touchBarProviderMode,
-            shouldPresent: touchBarPinned || !touchBarYieldedToForegroundApp
+            shouldPresent: !touchBarSuppressedForForegroundApp
         )
+    }
+
+    private func shouldShowTouchBar(for app: NSRunningApplication?) -> Bool {
+        let filters = touchBarAppFilters
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+
+        guard !filters.isEmpty else {
+            return true
+        }
+
+        guard let app else {
+            return false
+        }
+
+        let candidates = [
+            app.bundleIdentifier,
+            app.localizedName,
+        ].compactMap { $0?.lowercased() }
+
+        return filters.contains { filter in
+            candidates.contains(filter)
+        }
     }
 
     private var shouldShowCapsule: Bool {

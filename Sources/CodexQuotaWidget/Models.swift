@@ -28,6 +28,9 @@ struct WidgetState: Codable {
     // app is in the foreground (re-assert it on every app switch). When
     // false/unset, the Touch Bar is yielded to the foreground app after a switch.
     var touchBarPinned: Bool?
+    // Optional foreground app allowlist. Entries match either bundle identifier
+    // or localized app name, case-insensitively. Empty/unset means all apps.
+    var touchBarAppFilters: [String]?
 }
 
 enum TouchBarProviderMode: String, Codable {
