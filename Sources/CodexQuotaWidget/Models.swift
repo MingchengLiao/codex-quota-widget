@@ -18,6 +18,7 @@ struct QuotaSnapshot: Codable {
 }
 
 struct WidgetState: Codable {
+    var widgetEnabled: Bool?
     var originX: Double?
     var originY: Double?
     var language: WidgetLanguage?

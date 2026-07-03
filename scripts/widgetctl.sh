@@ -11,8 +11,10 @@ SERVICE="gui/$(id -u)/$AGENT_ID"
 usage() {
   cat <<'EOF'
 Usage:
+  scripts/widgetctl.sh on
+  scripts/widgetctl.sh off
   scripts/widgetctl.sh enable [--touchbar-only|--with-capsule]
-  scripts/widgetctl.sh disable
+  scripts/widgetctl.sh disable   # uninstall LaunchAgent
   scripts/widgetctl.sh restart
   scripts/widgetctl.sh status
   scripts/widgetctl.sh capsule on|off
@@ -48,6 +50,16 @@ fi
 shift
 
 case "$command" in
+  on)
+    run_widget_cli --widget on
+    restart_if_installed
+    ;;
+
+  off)
+    run_widget_cli --widget off
+    restart_if_installed
+    ;;
+
   enable|start)
     capsule_mode=""
     while [[ $# -gt 0 ]]; do

@@ -16,6 +16,7 @@ func printUsage() {
       CodexQuotaWidget
       CodexQuotaWidget --once
       CodexQuotaWidget --settings
+      CodexQuotaWidget --widget on|off
       CodexQuotaWidget --capsule on|off
       CodexQuotaWidget --providers codex|claude|both
       CodexQuotaWidget --touchbar-pin on|off
@@ -39,6 +40,7 @@ if arguments.first == "--settings" {
         "language": (state.language ?? .english).rawValue,
         "touchBarPinned": state.touchBarPinned ?? false,
         "touchBarProviderMode": (state.touchBarProviderMode ?? .both).rawValue,
+        "widgetEnabled": state.widgetEnabled ?? true,
     ]
     guard let data = try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys]) else {
         writeStderr("Failed to encode settings.\n")
@@ -46,6 +48,30 @@ if arguments.first == "--settings" {
     }
     FileHandle.standardOutput.write(data)
     writeStdout("\n")
+    exit(EXIT_SUCCESS)
+}
+
+if arguments.first == "--widget" {
+    guard arguments.count == 2 else {
+        writeStderr("Usage: CodexQuotaWidget --widget on|off\n")
+        exit(EX_USAGE)
+    }
+
+    let enabled: Bool
+    switch arguments[1].lowercased() {
+    case "on", "enable", "enabled", "true", "1":
+        enabled = true
+    case "off", "disable", "disabled", "false", "0":
+        enabled = false
+    default:
+        writeStderr("Usage: CodexQuotaWidget --widget on|off\n")
+        exit(EX_USAGE)
+    }
+
+    WidgetStateStore().update { state in
+        state.widgetEnabled = enabled
+    }
+    writeStdout("Widget \(enabled ? "enabled" : "disabled"). Restart the helper to apply if it is already running.\n")
     exit(EXIT_SUCCESS)
 }
 

@@ -41,11 +41,21 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         (providerMode.showsClaude && lastClaudeSnapshot != nil) || providerMode.showsCodex
     }
 
-    func show(claudeSnapshot: QuotaSnapshot?, codexSnapshot: QuotaSnapshot?, mode: TouchBarProviderMode) {
+    func show(
+        claudeSnapshot: QuotaSnapshot?,
+        codexSnapshot: QuotaSnapshot?,
+        mode: TouchBarProviderMode,
+        shouldPresent: Bool = true
+    ) {
         lastClaudeSnapshot = claudeSnapshot
         lastCodexSnapshot = codexSnapshot
         providerMode = mode
         quotaView.render(claudeSnapshot: claudeSnapshot, codexSnapshot: codexSnapshot, mode: mode, language: language)
+
+        guard shouldPresent else {
+            dismiss()
+            return
+        }
 
         guard !isUserHidden else {
             return

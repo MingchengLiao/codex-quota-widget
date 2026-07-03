@@ -5,6 +5,7 @@ final class WidgetWindowController: NSObject, NSWindowDelegate {
     var onRequestRefresh: (() -> Void)?
     var onShowTouchBar: (() -> Void)?
     var onHideCapsule: (() -> Void)?
+    var onDisableWidget: (() -> Void)?
     var onOpenTouchBarSettings: (() -> Void)?
     var onToggleLanguage: (() -> WidgetLanguage)?
     var currentLanguage: (() -> WidgetLanguage)?
@@ -90,6 +91,9 @@ final class WidgetWindowController: NSObject, NSWindowDelegate {
         contentView.onHideCapsule = { [weak self] in
             self?.onHideCapsule?()
         }
+        contentView.onDisableWidget = { [weak self] in
+            self?.onDisableWidget?()
+        }
         contentView.onOpenTouchBarSettings = { [weak self] in
             self?.onOpenTouchBarSettings?()
         }
@@ -170,6 +174,7 @@ private final class WidgetContentView: NSView {
     var onRequestRefresh: (() -> Void)?
     var onShowTouchBar: (() -> Void)?
     var onHideCapsule: (() -> Void)?
+    var onDisableWidget: (() -> Void)?
     var onOpenTouchBarSettings: (() -> Void)?
     var onToggleLanguage: (() -> WidgetLanguage)?
     var currentLanguage: (() -> WidgetLanguage)?
@@ -405,6 +410,15 @@ private final class WidgetContentView: NSView {
         )
         languageItem.target = self
         menu.addItem(languageItem)
+        menu.addItem(.separator())
+
+        let disableWidgetItem = NSMenuItem(
+            title: "关闭 Widget",
+            action: #selector(handleContextDisableWidget),
+            keyEquivalent: ""
+        )
+        disableWidgetItem.target = self
+        menu.addItem(disableWidgetItem)
 
         NSMenu.popUpContextMenu(menu, with: event, for: self)
     }
@@ -427,6 +441,11 @@ private final class WidgetContentView: NSView {
     @objc
     private func handleContextHideCapsule() {
         onHideCapsule?()
+    }
+
+    @objc
+    private func handleContextDisableWidget() {
+        onDisableWidget?()
     }
 
     @objc

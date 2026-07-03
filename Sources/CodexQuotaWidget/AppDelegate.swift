@@ -17,19 +17,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastCodexSnapshot: QuotaSnapshot?
     private var lastClaudeSnapshot: QuotaSnapshot?
     private var refreshInFlight = false
+    private var widgetEnabled = true
     private var language: WidgetLanguage = .english
     private var capsuleEnabled = true
     private var capsuleHiddenUntilCodexRelaunch = false
     private var touchBarProviderMode: TouchBarProviderMode = .both
     private var touchBarPinned = false
+    private var touchBarYieldedToForegroundApp = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         let state = stateStore.load()
+        widgetEnabled = state.widgetEnabled ?? true
         language = state.language ?? .english
         capsuleEnabled = state.capsuleEnabled ?? true
         touchBarProviderMode = state.touchBarProviderMode ?? .both
         touchBarPinned = state.touchBarPinned ?? false
+        touchBarYieldedToForegroundApp = !touchBarPinned && !isCodexFrontmost()
         touchBarController.setLanguage(language)
         windowController.onRequestRefresh = { [weak self] in
             self?.refreshState(reason: "manual-refresh", forceSnapshotReload: true)
@@ -39,6 +43,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         windowController.onHideCapsule = { [weak self] in
             self?.hideCapsule()
+        }
+        windowController.onDisableWidget = { [weak self] in
+            self?.setWidgetEnabled(false)
         }
         windowController.onOpenTouchBarSettings = { [weak self] in
             self?.openTouchBarSettings()
@@ -87,8 +94,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            guard let self, self.touchBarPinned else { return }
-            self.touchBarController.reassertPresentation()
+            guard let self else { return }
+            if self.touchBarPinned {
+                self.touchBarController.reassertPresentation()
+                return
+            }
+
+            if self.isCodexFrontmost() {
+                self.touchBarYieldedToForegroundApp = false
+                self.showTouchBar()
+            } else {
+                self.touchBarYieldedToForegroundApp = true
+                self.touchBarController.hideForInactiveApp()
+            }
         }
 
         appObservers = [launchObserver, terminateObserver, activateObserver]
@@ -105,6 +123,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if launched {
             fastRefreshUntil = Date().addingTimeInterval(120)
             capsuleHiddenUntilCodexRelaunch = false
+            touchBarYieldedToForegroundApp = false
         }
         refreshState(reason: launched ? "codex-launch" : "codex-exit")
     }
@@ -136,6 +155,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if !running {
             capsuleHiddenUntilCodexRelaunch = false
+        }
+
+        guard widgetEnabled else {
+            hideWidgetSurfaces()
+            refreshTimer?.invalidate()
+            refreshTimer = nil
+            return
         }
 
         if reason == "codex-launch" {
@@ -172,11 +198,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         !NSRunningApplication.runningApplications(withBundleIdentifier: codexBundleIdentifier).isEmpty
     }
 
+    private func isCodexFrontmost() -> Bool {
+        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == codexBundleIdentifier
+    }
+
     private func showTouchBar() {
         touchBarController.show(
             claudeSnapshot: touchBarProviderMode.showsClaude ? lastClaudeSnapshot : nil,
             codexSnapshot: touchBarProviderMode.showsCodex ? lastCodexSnapshot : nil,
-            mode: touchBarProviderMode
+            mode: touchBarProviderMode,
+            shouldPresent: touchBarPinned || !touchBarYieldedToForegroundApp
         )
     }
 
@@ -187,6 +218,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func hideCapsule() {
         capsuleHiddenUntilCodexRelaunch = true
         windowController.hide()
+    }
+
+    private func setWidgetEnabled(_ enabled: Bool) {
+        widgetEnabled = enabled
+        stateStore.update { state in
+            state.widgetEnabled = enabled
+        }
+        refreshState(reason: enabled ? "widget-enabled" : "widget-disabled")
+    }
+
+    private func hideWidgetSurfaces() {
+        windowController.hide()
+        touchBarController.hideForInactiveApp()
     }
 
     private func toggleLanguage() -> WidgetLanguage {
@@ -227,6 +271,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let self else { return }
                 self.refreshInFlight = false
                 self.lastCodexSnapshot = snapshot
+                guard self.widgetEnabled else {
+                    self.hideWidgetSurfaces()
+                    return
+                }
                 if self.shouldShowCapsule {
                     self.windowController.show(snapshot: snapshot)
                 } else {
